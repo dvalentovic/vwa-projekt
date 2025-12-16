@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Nová položka{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">Inventář</span>
+      <h2 class="page__title">Nová položka</h2>
+      <p class="page__subtitle">Vytvořte novou položku do systému.</p>
+    </div>
+  </div>
+
+  <div class="card form-card">
+    {% if errors %}
+      <ul class="errors">
+        {% for field, msg in errors.items() %}
+          <li><strong>{{ field }}:</strong> {{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('create_item_post') }}">
+      <label>
+        Název
+        <input type="text" name="name" required value="{{ form.name }}">
+      </label>
+      <label>
+        Cena
+        <input type="number" step="0.01" name="price" required value="{{ form.price }}">
+      </label>
+      <label>
+        Popis
+        <textarea name="description" rows="3">{{ form.description }}</textarea>
+      </label>
+      <button type="submit">Uložit</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    {% set current_user = get_user(request) %}
+    <main class="dashboard">
+        <header class="dashboard__header">
+            <div>
+                {% if current_user %}
+                    <p class="dashboard__kicker">Vítej, {{ current_user.username }}</p>
+                {% else %}
+                    <p class="dashboard__kicker">Analytics</p>
+                {% endif %}
+                <h1 class="dashboard__title">Campaign Overview</h1>
+                <p class="dashboard__subtitle">facebook.com/companyname</p>
+            </div>
+            <div class="dashboard__actions">
+                <div class="search-field">
+                    <input type="text" placeholder="Search" />
+                    <span class="search-icon">⌕</span>
+                </div>
+                <button class="btn-primary">New Company</button>
+            </div>
+        </header>
+
+        <div class="dashboard__columns">
+            <div class="dashboard__column dashboard__column--left">
+                <div class="dashboard__row">
+                    <article class="card gradient-card">
+                        <div class="card__label">Total Likes</div>
+                        <div class="card__value">23.0000K</div>
+                        <div class="chart-placeholder">Wave graph placeholder</div>
+                        <div class="card__legend">
+                            <span>Female 20%</span>
+                            <span>Male 50%</span>
+                            <span>Other 30%</span>
+                        </div>
+                    </article>
+
+                    <article class="card">
+                        <div class="card__label">Pending Messages</div>
+                        <div class="card__value">20k</div>
+                        <div class="chart-placeholder circle">Circular chart placeholder</div>
+                        <div class="card__legend">
+                            <span>Female 80%</span>
+                            <span>Male 20%</span>
+                        </div>
+                    </article>
+                </div>
+
+                <article class="card activity-card">
+                    <header class="activity-card__header">
+                        <h2>Post Activity</h2>
+                    </header>
+
+                    <ul class="activity-list">
+                        <li>
+                            <div>
+                                <h3>What is the value for your company</h3>
+                                <p>Post number 2</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span>Company</span>
+                                <strong>7k</strong>
+                                <span class="trend down">▼ 4%</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <h3>How to sell stuff?</h3>
+                                <p>Post number 1</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span>Blog</span>
+                                <strong>3k</strong>
+                                <span class="trend up">▲ 5%</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <h3>New Product</h3>
+                                <p>Post number 3</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span>Product</span>
+                                <strong>2k</strong>
+                                <span class="trend up">▲ 6%</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <h3>What do you do today?</h3>
+                                <p>Post number 4</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span>Persona</span>
+                                <strong>1k</strong>
+                                <span class="trend up">▲ 8%</span>
+                            </div>
+                        </li>
+                    </ul>
+                </article>
+            </div>
+
+            <div class="dashboard__column dashboard__column--right">
+                <article class="card mini-card">
+                    <div class="mini-card__value">3k</div>
+                    <p>Comments</p>
+                    <div class="progress-bar">
+                        <span></span>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card__label">Post Stats</div>
+                    <div class="chart-placeholder tall">Bar/line graph placeholder</div>
+                    <div class="completed-block">
+                        <div>
+                            <p>Completed Posts</p>
+                            <small>Current Week</small>
+                        </div>
+                        <strong>874</strong>
+                    </div>
+                </article>
+
+                <article class="card mini-card">
+                    <div class="mini-card__value">10k</div>
+                    <p>Links Shared</p>
+                    <div class="progress-bar dark">
+                        <span></span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+
+{% endblock %}

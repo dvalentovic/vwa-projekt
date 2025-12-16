@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Položky{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">Inventář</span>
+      <h2 class="page__title">Položky</h2>
+      <p class="page__subtitle">Přehled dostupných položek v systému.</p>
+    </div>
+    <div class="page__actions">
+      {% set current_user = get_user(request) %}
+      {% if current_user and current_user.role == "admin" %}
+        <a href="{{ url_for('create_item_ui') }}" class="button">Přidat novou</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card table-card stack-md">
+    <h3 style="margin:0;">Seznam položek</h3>
+    {% if items|length == 0 %}
+      <p style="margin:0;">Žádné položky k zobrazení.</p>
+    {% else %}
+      <table class="data">
+        <tr><th>Název</th><th>Cena</th></tr>
+        {% for it in items %}
+          <tr><td>{{ it.name }}</td><td>{{ "%.2f"|format(it.price) }} Kč</td></tr>
+          {% if it.description %}<tr><td colspan="2">{{ it.description }}</td></tr>{% endif %}
+        {% endfor %}
+      </table>
+      <p><em>Celkem: {{ "%.2f"|format(total) }} Kč</em></p>
+    {% endif %}
+    {% if not (current_user and current_user.role == "admin") %}
+      <p style="font-size:0.75rem;color:var(--muted);margin:0;">Přidání nové položky je dostupné pouze administrátorům.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Domov{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Domov</h2>
+      <p class="page__subtitle">Vyber, kam chceš ísť.</p>
+    </div>
+  </div>
+
+  <div class="card" style="display:flex; flex-direction:column; gap:0.75rem;">
+    {% if user %}
+      <p>Prihlásený ako <strong>{{ user.username }}</strong>.</p>
+
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <a class="button" href="{{ request.url_for('events_ui') }}">Dochádzka / Udalosti</a>
+        <form method="post" action="{{ request.url_for('logout') }}" style="display:inline;">
+          <button type="submit" class="button button--small">Odhlásiť sa</button>
+        </form>
+        {% if user and user.role == "admin" %}
+          <a href="{{ request.url_for('admin_users_ui') }}">Používatelia</a>
+        {% endif %}
+        <a href="{{ url_for('change_password_ui') }}">Zmeniť heslo</a>
+
+      </div>
+    {% else %}
+      <p>Nie si prihlásený.</p>
+
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <a class="button" href="{{ request.url_for('login_ui') }}">Prihlásiť sa</a>
+        <a class="button button--small" href="{{ request.url_for('events_ui') }}">Dochádzka / Udalosti</a>
+
+      </div>
+
+      <p style="opacity:0.8; margin-top:0.5rem;">
+        Pozn.: Dochádzka je len pre prihlásených.
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

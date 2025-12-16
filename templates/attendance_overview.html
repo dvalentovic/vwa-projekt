@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Prehľad dochádzky{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Prehľad dochádzky</h2>
+      <p class="page__subtitle">Vyber udalosť a uvidíš kto ide, kto nejde a kto nič nepotvrdil.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <form method="get" action="{{ url_for('attendance_overview_ui') }}" style="display:flex; gap:12px; align-items:end;">
+      <div class="form-row" style="flex:1;">
+        <label>Udalosť</label>
+        <select name="event_id">
+          {% for e in events %}
+            <option value="{{ e.id }}" {% if selected_event and e.id == selected_event.id %}selected{% endif %}>
+              {{ e.date }} – {{ e.event_type }} ({{ e.location or '-' }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="button" type="submit">Zobraziť</button>
+    </form>
+  </div>
+
+  {% if overview %}
+  <div class="grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px;">
+    <div class="card">
+      <h3>✅ Idú ({{ overview.yes|length }})</h3>
+      <ul>{% for n in overview.yes %}<li>{{ n }}</li>{% endfor %}</ul>
+    </div>
+    <div class="card">
+      <h3>❔ Nepotvrdili ({{ overview.unknown|length }})</h3>
+      <ul>{% for n in overview.unknown %}<li>{{ n }}</li>{% endfor %}</ul>
+    </div>
+    <div class="card">
+      <h3>❌ Neidú ({{ overview.no|length }})</h3>
+      <ul>{% for n in overview.no %}<li>{{ n }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

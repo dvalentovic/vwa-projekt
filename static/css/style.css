@@ -1,0 +1,596 @@
+/* -------------------------------------------------
+   1) RESET & BASE
+--------------------------------------------------*/
+* {
+    box-sizing: border-box;
+    font-family: "Stack Sans Text", sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+/* -------------------------------------------------
+   2) CSS VARIABLES
+--------------------------------------------------*/
+:root {
+    --bg: #f5efe8;
+    --card: #ffffff;
+    --accent: #ff621d;
+    --accent-dark: #1f2333;
+    --text: #2b2d31;
+    --muted: #787a83;
+}
+
+/* -------------------------------------------------
+   3) LAYOUT CONTAINERS
+--------------------------------------------------*/
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.main {
+    flex-grow: 1;
+    padding: 30px 20px;
+    background: lightgray;
+}
+
+/* -------------------------------------------------
+   4) NAVIGATION
+--------------------------------------------------*/
+nav {
+    width: 96px;
+    min-width: 72px;
+    height: 100vh;
+    padding: 30px 20px;
+    background: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Nav links container */
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    align-items: center;
+    width: 100%;
+}
+
+/* Buttons in nav */
+nav button,
+nav .nav-btn {
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    background: transparent;
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+nav button:hover,
+nav .nav-btn:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+/* Unified nav-link */
+.nav-link {
+    width: 56px;
+    height: 56px;
+    color: #ffffff !important;
+    text-decoration: none;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 160ms ease, transform 120ms ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    background: rgba(255,255,255,0.06);
+    transform: translateY(-2px);
+}
+
+/* Active state */
+.nav-link.is-active {
+    background: #ffffff !important;
+    border-radius: 50% !important;
+    transform: translateY(0);
+    box-shadow: 0 6px 18px rgba(12,15,25,0.12);
+}
+
+.nav-link.is-active:hover,
+.nav-link.is-active:focus {
+    background: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+/* Icon colors */
+.nav-link .material-symbols-outlined,
+nav .nav-btn .material-symbols-outlined {
+    font-size: 28px;
+    line-height: 1;
+    color: #ffffff !important;
+}
+
+.nav-link.is-active .material-symbols-outlined {
+    color: var(--accent) !important;
+}
+
+/* -------------------------------------------------
+   5) INPUTS & FORM FIELDS
+--------------------------------------------------*/
+input,
+select,
+textarea,
+button,
+.big-black-button {
+    background: white;
+    border: none;
+    border-radius: 100px;
+    padding: 15px 30px;
+}
+
+/* Search */
+.search-field {
+    display: flex;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid #e0dcd5;
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+}
+
+.search-field input {
+    width: 180px;
+    padding: 0.4rem;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+/* Form card */
+.form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.form-card label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-dark);
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select {
+    background: #fff;
+    border: 1px solid #ddd6cd;
+    border-radius: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+    outline: none;
+    font-family: inherit;
+}
+
+.form-card textarea {
+    resize: vertical;
+}
+
+/* -------------------------------------------------
+   6) BUTTONS
+--------------------------------------------------*/
+.big-black-button {
+    background: black;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-primary,
+.button,
+.form-card button,
+.page__actions .button {
+    display: inline-block;
+    background: var(--accent-dark);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.65rem 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.button:hover,
+.form-card button:hover {
+    background: #0f1220;
+}
+
+/* -------------------------------------------------
+   7) PAGE / DASHBOARD (UNIFIED STYLES)
+--------------------------------------------------*/
+.page,
+.dashboard {
+    flex-grow: 1;
+    padding: 2.5rem 3rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Headers */
+.page__header,
+.dashboard__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #e6e1da;
+}
+
+/* Titles */
+.page__kicker,
+.dashboard__kicker {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0;
+}
+
+.page__title,
+.dashboard__title {
+    margin: 0.35rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.page__subtitle,
+.dashboard__subtitle {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.page__actions,
+.dashboard__actions {
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+}
+
+/* -------------------------------------------------
+   8) CARDS & GRIDS
+--------------------------------------------------*/
+.card {
+    background: var(--card);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: 0 12px 35px rgba(15,23,42,0.08);
+}
+
+.mini-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.card__label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.card__value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin: 0.5rem 0 1rem;
+}
+
+/* Summary grid */
+.summary-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Table */
+.table-card table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.table-card th,
+.table-card td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #eee7de;
+}
+
+.table-card th {
+    background: #faf7f2;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--accent-dark);
+}
+
+.table-card tr:last-child td {
+    border-bottom: none;
+}
+
+/* -------------------------------------------------
+   9) CHARTS, PROGRESS, STATS
+--------------------------------------------------*/
+.chart-placeholder {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.2);
+    border-radius: 0.9rem;
+}
+
+.chart-placeholder.circle {
+    height: 140px;
+    border-radius: 999px;
+}
+
+.chart-placeholder.tall {
+    height: 180px;
+}
+
+/* Progress */
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #f1d7dc;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar span {
+    width: 70%;
+    height: 100%;
+    display: block;
+    background: #ff7ea8;
+}
+
+.progress-bar.dark {
+    background: #dcdfe6;
+}
+
+.progress-bar.dark span {
+    width: 55%;
+    background: var(--accent-dark);
+}
+
+/* Stats stack */
+.stats-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* -------------------------------------------------
+   10) ACTIVITY SECTION
+--------------------------------------------------*/
+.activity-area {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.activity-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activity-tabs button {
+    padding: 0.25rem 0.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.activity-tabs .is-active {
+    background: #ece7ff;
+    color: var(--accent-dark);
+}
+
+/* Activity list */
+.activity-list {
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activity-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0ece4;
+}
+
+.activity-list h3 {
+    font-size: 1rem;
+    margin: 0;
+}
+
+.activity-list p {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+/* Meta */
+.activity-meta {
+    min-width: 120px;
+    text-align: right;
+    font-size: 0.85rem;
+}
+
+.activity-meta strong {
+    font-size: 1.1rem;
+    margin: 0.2rem 0;
+    display: block;
+}
+
+/* Trend */
+.trend {
+    font-weight: 600;
+}
+
+.trend.up { color: #29b26b; }
+.trend.down { color: #ea5d61; }
+
+/* -------------------------------------------------
+   11) TASKS
+--------------------------------------------------*/
+.completed-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.2rem;
+}
+
+.completed-block p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.completed-block small {
+    color: var(--muted);
+}
+
+.tasks-list {
+    margin: 1.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tasks-list li {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+}
+
+/* -------------------------------------------------
+   12) DASHBOARD GRID STRUCTURE
+--------------------------------------------------*/
+.dashboard__columns {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.dashboard__column {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dashboard__column--left {
+    flex: 2 1 0;
+}
+
+.dashboard__column--right {
+    flex: 1.1 1 0;
+}
+
+.dashboard__row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.dashboard__row > * {
+    flex: 1 1 0;
+}
+
+/* -------------------------------------------------
+   13) ERRORS
+--------------------------------------------------*/
+.errors {
+    padding: 0.75rem 1rem;
+    margin: 0;
+    background: #ffe9ee;
+    border: 1px solid #ffd0dc;
+    border-radius: 0.9rem;
+    list-style: none;
+    font-size: 0.75rem;
+    color: #bb1f49;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.error {
+    padding: 0.6rem 0.8rem;
+    background: #ffe9ee;
+    border: 1px solid #ffd0dc;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    color: #bb1f49;
+}
+
+/* -------------------------------------------------
+   14) UTILITIES
+--------------------------------------------------*/
+.stack-lg { display: flex; flex-direction: column; gap: 1.4rem; }
+.stack-md { display: flex; flex-direction: column; gap: 0.9rem; }
+
+/* -------------------------------------------------
+   15) SPECIAL
+--------------------------------------------------*/
+.gradient-card {
+    background: linear-gradient(120deg, #ff8fb5, #ffb074);
+    color: #fff;
+}
+
+.gradient-card .chart-placeholder {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+}

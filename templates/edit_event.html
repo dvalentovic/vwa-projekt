@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Upraviť udalosť{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Upraviť udalosť</h2>
+      <p class="page__subtitle">Uprav tréningovú alebo zápasovú udalosť.</p>
+    </div>
+  </div>
+
+  <div class="card form-card">
+    {% if errors %}
+      <ul class="form-errors">
+        {% for e in errors %}
+          <li>{{ e }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('edit_event_submit', event_id=event_id) }}">
+      <div>
+          <label for="event_type">Typ udalosti</label>
+          <select id="event_type" name="event_type">
+            <option value="">-- vyber typ --</option>
+            <option value="training" {% if form.event_type == "training" %}selected{% endif %}>
+              Tréning
+            </option>
+            <option value="match" {% if form.event_type == "match" %}selected{% endif %}>
+              Zápas
+            </option>
+          </select>
+      </div>
+      <label>
+        Dátum
+        <input type="date" name="date" required value="{{ form.date }}">
+      </label>
+      <label>
+        Začiatok (čas)
+        <input type="time" name="time_from" value="{{ form.time_from }}">
+      </label>
+      <label>
+        Koniec (čas)
+        <input type="time" name="time_to" value="{{ form.time_to }}">
+      </label>
+      <label>
+        Miesto
+        <input type="text" name="location" value="{{ form.location }}">
+      </label>
+      <label>
+        Poznámka
+        <textarea name="note" rows="3">{{ form.note }}</textarea>
+      </label>
+      <button type="submit">Uložiť zmeny</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

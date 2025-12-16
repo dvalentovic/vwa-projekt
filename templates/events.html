@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Udalosti{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Udalosti</h2>
+      <p class="page__subtitle">Prehľad tréningov a zápasov.</p>
+    </div>
+
+    <div class="page__actions">
+      {% if user and user.role in ["admin", "coach"] %}
+        <a href="{{ request.url_for('create_event_ui') }}" class="button">Pridať udalosť</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card">
+    {% if events|length == 0 %}
+      <p>Zatiaľ nie sú naplánované žiadne udalosti.</p>
+    {% else %}
+      <table class="table">
+        <tr>
+          <th>Dátum</th>
+          <th>Typ</th>
+          <th>Čas</th>
+          <th>Miesto</th>
+          <th>Poznámka</th>
+            <th>Dochádzka</th>
+          {% if user %}
+            <th>Moja účasť</th>
+          {% endif %}
+
+          {% if user and user.role in ["admin", "coach"] %}
+            <th>Akcie</th>
+          {% endif %}
+        </tr>
+
+        {% for ev in events %}
+          <tr>
+            <td>{{ ev.date }}</td>
+            <td>
+              {% if ev.event_type == "training" %}
+                Tréning
+              {% elif ev.event_type == "match" %}
+                Zápas
+              {% else %}
+                {{ ev.event_type }}
+              {% endif %}
+            </td>
+            <td>
+              {% if ev.time_from or ev.time_to %}
+                {{ ev.time_from }} – {{ ev.time_to }}
+              {% endif %}
+            </td>
+            <td>{{ ev.location }}</td>
+            <td>{{ ev.note }}</td>
+
+
+        <!-- NOVÉ: Dochádzka (prehľad pre všetkých) -->
+        <td>
+          {% set ov = attendance_overview.get(ev.id) if attendance_overview is defined else None %}
+          {% if ov %}
+            <div style="display:flex; flex-direction:column; gap:0.25rem;">
+              <div>✅ {{ ov["yes"]|length }}: {{ ov["yes"]|join(", ") }}</div>
+              <div>❔ {{ ov["unknown"]|length }}: {{ ov["unknown"]|join(", ") }}</div>
+              <div>❌ {{ ov["no"]|length }}: {{ ov["no"]|join(", ") }}</div>
+            </div>
+          {% else %}
+            <span>—</span>
+          {% endif %}
+        </td>
+
+        {% if user %}
+          <td>
+            {% set st = user_statuses.get(ev.id) if user_statuses is defined else None %}
+            <form method="post"
+                  action="{{ request.url_for('set_attendance', event_id=ev.id) }}"
+                  style="display:flex; gap:0.25rem;">
+              <button type="submit"
+                      name="status"
+                      value="yes"
+                      class="button button--small {% if st == 'yes' %}button--primary{% endif %}">
+                Idem
+              </button>
+              <button type="submit"
+                      name="status"
+                      value="unknown"
+                      class="button button--small {% if st == 'unknown' %}button--primary{% endif %}">
+                Neviem
+              </button>
+              <button type="submit"
+                      name="status"
+                      value="no"
+                      class="button button--small {% if st == 'no' %}button--primary{% endif %}">
+                Neprídem
+              </button>
+            </form>
+          </td>
+        {% endif %}
+
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

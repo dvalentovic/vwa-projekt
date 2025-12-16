@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Používatelia{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">Admin</span>
+      <h2 class="page__title">Používatelia</h2>
+      <p class="page__subtitle">Vytváranie hráčov a trénerov.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;">
+    {% if error %}
+      <p style="color:#b00020;">{{ error }}</p>
+    {% endif %}
+
+    {% if created %}
+      <div style="padding:0.75rem; border:1px solid #ddd; border-radius:12px;">
+        <div><strong>Vytvorený účet:</strong> {{ created.username }} ({{ created.role }})</div>
+        <div><strong>Dočasné heslo:</strong> <code>{{ created.temp_password }}</code></div>
+        <div style="opacity:0.8; margin-top:0.25rem;">Odporúčanie: hráč nech si ho po prvom prihlásení zmení.</div>
+      </div>
+    {% endif %}
+
+    <form method="post" action="{{ request.url_for('admin_users_create') }}"
+          style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:end; margin-top:0.75rem;">
+      <label>
+        Username
+        <input type="text" name="username" required>
+      </label>
+
+      <label>
+        Rola
+        <select name="role">
+          <option value="player">player</option>
+          <option value="coach">coach</option>
+          <option value="admin">admin</option>
+        </select>
+      </label>
+
+      <button type="submit" class="button">Vytvoriť</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <table class="table">
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Rola</th>
+      </tr>
+      {% for u in users %}
+        <tr>
+          <td>{{ u.id if u.id is defined else u["id"] }}</td>
+          <td>{{ u.username if u.username is defined else u["username"] }}</td>
+          <td>{{ u.role if u.role is defined else u["role"] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

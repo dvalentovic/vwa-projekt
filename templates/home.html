@@ -7,38 +7,54 @@
     <div class="page__titles">
       <span class="page__kicker">TeamHub</span>
       <h2 class="page__title">Domov</h2>
-      <p class="page__subtitle">Vyber, kam chceš ísť.</p>
+      <p class="page__subtitle">Vyber, kam chceš ísť. Rýchly prehľad a skratky.</p>
     </div>
   </div>
 
-  <div class="card" style="display:flex; flex-direction:column; gap:0.75rem;">
-    {% if user %}
-      <p>Prihlásený ako <strong>{{ user.username }}</strong>.</p>
+  <div class="grid grid--2">
+    <div class="card">
+      {% if user %}
+        <h3 class="card__title">Tvoj účet</h3>
+        <p class="card__muted">Prihlásený ako <strong>{{ user.username }}</strong>.</p>
 
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <a class="button" href="{{ request.url_for('events_ui') }}">Dochádzka / Udalosti</a>
-        <form method="post" action="{{ request.url_for('logout') }}" style="display:inline;">
-          <button type="submit" class="button button--small">Odhlásiť sa</button>
-        </form>
-        {% if user and user.role == "admin" %}
-          <a href="{{ request.url_for('admin_users_ui') }}">Používatelia</a>
-        {% endif %}
-        <a href="{{ url_for('change_password_ui') }}">Zmeniť heslo</a>
+        <div class="divider"></div>
 
-      </div>
-    {% else %}
-      <p>Nie si prihlásený.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="button button--primary" href="{{ request.url_for('events_ui') }}">Dochádzka / Udalosti</a>
+          <a class="button" href="{{ url_for('change_password_ui') }}">Zmeniť heslo</a>
 
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <a class="button" href="{{ request.url_for('login_ui') }}">Prihlásiť sa</a>
-        <a class="button button--small" href="{{ request.url_for('events_ui') }}">Dochádzka / Udalosti</a>
+          {% if user.role == "admin" %}
+            <a class="button" href="{{ request.url_for('admin_users_ui') }}">Používatelia</a>
+          {% endif %}
+        </div>
 
-      </div>
+      {% else %}
+        <h3 class="card__title">Vitaj</h3>
+        <p class="card__muted">Nie si prihlásený. Dochádzka je len pre prihlásených hráčov.</p>
 
-      <p style="opacity:0.8; margin-top:0.5rem;">
-        Pozn.: Dochádzka je len pre prihlásených.
+        <div class="divider"></div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="button button--primary" href="{{ request.url_for('login_ui') }}">Prihlásiť sa</a>
+          <a class="button" href="{{ request.url_for('events_ui') }}">Udalosti</a>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3 class="card__title">Tip</h3>
+      <p class="card__muted">
+        V “Udalosti” si vieš nastaviť účasť jedným klikom. Tréner potom vidí prehľad tímu.
       </p>
-    {% endif %}
+
+      <div class="divider"></div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <span class="badge badge--good"><span class="badge__dot"></span> going</span>
+        <span class="badge badge--warn"><span class="badge__dot"></span> maybe</span>
+        <span class="badge badge--bad"><span class="badge__dot"></span> not going</span>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

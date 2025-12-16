@@ -133,3 +133,72 @@ class AttendanceService:
         finally:
             if ctx is not None:
                 ctx.__exit__(None, None, None)
+
+    def get_user_stats(self, user_id: int, only_past: bool = True) -> Dict[str, Any]:
+        """
+        Vráti štatistiku dochádzky hráča:
+        total_events, going, not_going, maybe, no_response, percent_going
+        """
+        conn, ctx = self._get_conn()
+        try:
+            # 1) všetky eventy (voliteľne len minulé)
+            if only_past:
+                total_row = conn.execute(
+                    "SELECT COUNT(*) AS cnt FROM events WHERE date(event_date) <= date('now')"
+                ).fetchone()
+            else:
+                total_row = conn.execute(
+                    "SELECT COUNT(*) AS cnt FROM events"
+                ).fetchone()
+
+            total_events = int(total_row["cnt"] or 0)
+
+            # 2) rozdelenie podľa statusov pre usera
+            # (uprav si názvy statusov podľa toho, čo ukladáš: napr. 'yes'/'no'/'maybe')
+            if only_past:
+                rows = conn.execute(
+                    """
+                    SELECT a.status, COUNT(*) AS cnt
+                    FROM attendance a
+                    JOIN events e ON e.id = a.event_id
+                    WHERE a.user_id = ?
+                      AND date(e.event_date) <= date('now')
+                    GROUP BY a.status
+                    """,
+                    (user_id,),
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    """
+                    SELECT status, COUNT(*) AS cnt
+                    FROM attendance
+                    WHERE user_id = ?
+                    GROUP BY status
+                    """,
+                    (user_id,),
+                ).fetchall()
+
+            by_status = {r["status"]: int(r["cnt"]) for r in rows}
+
+            going = by_status.get("going", 0)  # alebo "yes"
+            not_going = by_status.get("not_going", 0)  # alebo "no"
+            maybe = by_status.get("maybe", 0)
+
+            responded = going + not_going + maybe
+            no_response = max(total_events - responded, 0)
+
+            percent_going = 0
+            if total_events > 0:
+                percent_going = round((going / total_events) * 100, 1)
+
+            return {
+                "total_events": total_events,
+                "going": going,
+                "not_going": not_going,
+                "maybe": maybe,
+                "no_response": no_response,
+                "percent_going": percent_going,
+            }
+        finally:
+            if ctx is not None:
+                ctx.__exit__(None, None, None)

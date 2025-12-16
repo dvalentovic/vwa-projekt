@@ -1,57 +1,46 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="sk">
 <head>
-    <meta charset="utf-8"/>
-    <title>{% block title %}Aplikace{% endblock %}</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Stack+Sans+Notch:wght@200..700&family=Stack+Sans+Text:wght@200..700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}TeamHub{% endblock %}</title>
+  <link rel="stylesheet" href="{{ request.url_for('static', path='css/style.css') }}">
 </head>
 <body>
 
-<div class="container">
-    {% set current_user = get_user(request) %}
-    {% set active_endpoint = request.scope['endpoint'].__name__ %}
-    <nav class="top-nav">
-        <div class="nav-links">
-            <a
-              class="nav-link{% if active_endpoint == 'home_ui' %} is-active{% endif %}"
-              href="{{ url_for('home_ui') }}"
-              title="home"
-              aria-label="home"
-              {% if active_endpoint == 'home_ui' %}aria-current="page"{% endif %}>
-                <span class="material-symbols-outlined" aria-hidden="true">home</span>
-            </a>
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="brand" href="{{ request.url_for('home_ui') }}">
+          <img src="{{ request.url_for('static', path='img/castkov.png') }}"
+               alt="OFK Častkov"
+               style="width:28px;height:28px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.2);">
+          <span class="brand__name">TeamHub</span>
+          <span class="brand__tag">OFK Častkov</span>
+        </a>
 
-        </div>
 
-        <div class="nav-footer">
-            {% if current_user %}
-                <div class="user-info" aria-hidden="false">
-                    <span class="user-name">Přihlášen: {{ current_user.username }}</span>
-                    <small class="user-role">({{ current_user.role }})</small>
-                </div>
-                <form method="post" action="{{ url_for('logout') }}">
-                    <button class="nav-btn" type="submit" title="Odhlásit" aria-label="Odhlásit">
-                        <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-                    </button>
-                </form>
-            {% else %}
-                <a class="nav-link" href="{{ url_for('login_ui') }}" title="Přihlásit" aria-label="Přihlásit">
-                    <span class="material-symbols-outlined" aria-hidden="true">login</span>
-                </a>
-            {% endif %}
-        </div>
-    </nav>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <a class="button button--small" href="{{ request.url_for('events_ui') }}">Udalosti</a>
+
+        {% if user %}
+          <span class="badge">
+            <span class="badge__dot"></span>
+            {{ user.username }}
+          </span>
+
+          <form method="post" action="{{ request.url_for('logout') }}" style="display:inline;">
+            <button type="submit" class="button button--small">Odhlásiť</button>
+          </form>
+        {% else %}
+          <a class="button button--small button--primary" href="{{ request.url_for('login_ui') }}">Prihlásiť</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
     {% block content %}{% endblock %}
-</div>
+  </main>
 
 </body>
 </html>

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Štatistika dochádzky{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Štatistika dochádzky</h2>
+      <p class="page__subtitle">Tvoje čísla (len minulé udalosti).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:12px;">
+      <div class="stat">
+        <div class="stat__label">Spolu udalostí</div>
+        <div class="stat__value">{{ stats.total_events }}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat__label">Účasť (%)</div>
+        <div class="stat__value">{{ stats.percent_going }}%</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat__label">Zúčastnil som sa</div>
+        <div class="stat__value">{{ stats.going }}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat__label">Nezúčastnil som sa</div>
+        <div class="stat__value">{{ stats.not_going }}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat__label">Možno / neisté</div>
+        <div class="stat__value">{{ stats.maybe }}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat__label">Bez odpovede</div>
+        <div class="stat__value">{{ stats.no_response }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Hráči & dochádzka{% endblock %}
+
+{% block content %}
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Hráči & dochádzka</h2>
+      <p class="page__subtitle">Prehľad účasti na tréningoch.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    {% if players|length == 0 %}
+      <p>Žiadni hráči na zobrazenie.</p>
+    {% else %}
+      <div style="overflow:auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Hráč</th>
+              <th>Tréningy</th>
+              <th>✅ Áno</th>
+              <th>❌ Nie</th>
+              <th>🤔 Možno</th>
+              <th>— Nezadané</th>
+              <th>% účasť</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in players %}
+              {% set total = p.trainings_total %}
+              {% set yes = p.yes_count %}
+              {% set pct = (100 * yes / total) if total else 0 %}
+              <tr>
+                <td><strong>{{ p.username }}</strong></td>
+                <td>{{ total }}</td>
+                <td>{{ p.yes_count }}</td>
+                <td>{{ p.no_count }}</td>
+                <td>{{ p.maybe_count }}</td>
+                <td>{{ p.missing_count }}</td>
+                <td>{{ "%.0f"|format(pct) }}%</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

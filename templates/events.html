@@ -21,89 +21,104 @@
     {% if events|length == 0 %}
       <p>Zatiaľ nie sú naplánované žiadne udalosti.</p>
     {% else %}
-      <table class="table">
-        <tr>
-          <th>Dátum</th>
-          <th>Typ</th>
-          <th>Čas</th>
-          <th>Miesto</th>
-          <th>Poznámka</th>
-            <th>Dochádzka</th>
-          {% if user %}
-            <th>Moja účasť</th>
-          {% endif %}
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Dátum</th>
+              <th>Typ</th>
+              <th>Čas</th>
+              <th>Miesto</th>
+              <th>Poznámka</th>
+              <th>Dochádzka</th>
 
-          {% if user and user.role in ["admin", "coach"] %}
-            <th>Akcie</th>
-          {% endif %}
-        </tr>
-
-        {% for ev in events %}
-          <tr>
-            <td>{{ ev.date }}</td>
-            <td>
-              {% if ev.event_type == "training" %}
-                Tréning
-              {% elif ev.event_type == "match" %}
-                Zápas
-              {% else %}
-                {{ ev.event_type }}
+              {% if user %}
+                <th>Moja účasť</th>
               {% endif %}
-            </td>
-            <td>
-              {% if ev.time_from or ev.time_to %}
-                {{ ev.time_from }} – {{ ev.time_to }}
+
+              {% if user and user.role in ["admin", "coach"] %}
+                <th>Akcie</th>
               {% endif %}
-            </td>
-            <td>{{ ev.location }}</td>
-            <td>{{ ev.note }}</td>
+            </tr>
+          </thead>
 
+          <tbody>
+            {% for ev in events %}
+              <tr>
+              <td class="mono" data-label="Dátum">{{ ev.date }}</td>
 
-        <!-- NOVÉ: Dochádzka (prehľad pre všetkých) -->
-        <td>
-          {% set ov = attendance_overview.get(ev.id) if attendance_overview is defined else None %}
-          {% if ov %}
-            <div style="display:flex; flex-direction:column; gap:0.25rem;">
-              <div>✅ {{ ov["yes"]|length }}: {{ ov["yes"]|join(", ") }}</div>
-              <div>❔ {{ ov["unknown"]|length }}: {{ ov["unknown"]|join(", ") }}</div>
-              <div>❌ {{ ov["no"]|length }}: {{ ov["no"]|join(", ") }}</div>
-            </div>
-          {% else %}
-            <span>—</span>
-          {% endif %}
-        </td>
+              <td data-label="Typ">
+                {% if ev.event_type == "training" %}
+                  Tréning
+                {% elif ev.event_type == "match" %}
+                  Zápas
+                {% else %}
+                  {{ ev.event_type }}
+                {% endif %}
+              </td>
 
-        {% if user %}
-          <td>
-            {% set st = user_statuses.get(ev.id) if user_statuses is defined else None %}
-            <form method="post"
-                  action="{{ request.url_for('set_attendance', event_id=ev.id) }}"
-                  style="display:flex; gap:0.25rem;">
-              <button type="submit"
-                      name="status"
-                      value="yes"
-                      class="button button--small {% if st == 'yes' %}button--primary{% endif %}">
-                Idem
-              </button>
-              <button type="submit"
-                      name="status"
-                      value="unknown"
-                      class="button button--small {% if st == 'unknown' %}button--primary{% endif %}">
-                Neviem
-              </button>
-              <button type="submit"
-                      name="status"
-                      value="no"
-                      class="button button--small {% if st == 'no' %}button--primary{% endif %}">
-                Neprídem
-              </button>
-            </form>
-          </td>
-        {% endif %}
+              <td class="mono" data-label="Čas">
+                {% if ev.time_from or ev.time_to %}
+                  {{ ev.time_from }} – {{ ev.time_to }}
+                {% endif %}
+              </td>
 
-          </tr>
-        {% endfor %}
-      </table>
+              <td data-label="Miesto">{{ ev.location }}</td>
+              <td class="muted" data-label="Poznámka">{{ ev.note }}</td>
+
+              <td data-label="Dochádzka">
+                {% set ov = attendance_overview.get(ev.id) if attendance_overview is defined else None %}
+                {% if ov %}
+                  <div style="display:flex; flex-direction:column; gap:0.25rem;">
+                    <div>✅ {{ ov["yes"]|length }}: {{ ov["yes"]|join(", ") }}</div>
+                    <div>❔ {{ ov["unknown"]|length }}: {{ ov["unknown"]|join(", ") }}</div>
+                    <div>❌ {{ ov["no"]|length }}: {{ ov["no"]|join(", ") }}</div>
+                  </div>
+                {% else %}
+                  <span>—</span>
+                {% endif %}
+              </td>
+
+              {% if user %}
+                <td data-label="Moja účasť">
+                  {% set st = user_statuses.get(ev.id) if user_statuses is defined else None %}
+                  <form method="post"
+                        action="{{ request.url_for('set_attendance', event_id=ev.id) }}"
+                        class="btnrow">
+                    <button type="submit" name="status" value="yes"
+                            class="button button--small {% if st == 'yes' %}button--primary{% endif %}">Idem</button>
+                    <button type="submit" name="status" value="unknown"
+                            class="button button--small {% if st == 'unknown' %}button--primary{% endif %}">Neviem</button>
+                    <button type="submit" name="status" value="no"
+                            class="button button--small {% if st == 'no' %}button--primary{% endif %}">Neprídem</button>
+                  </form>
+                </td>
+              {% endif %}
+
+              {% if user and user.role in ["admin", "coach"] %}
+                <td data-label="Akcie">
+                  <div class="btnrow">
+                    <a class="button button--sm button--ghost"
+                       href="{{ request.url_for('edit_event_ui', event_id=ev.id) }}">Upraviť</a>
+
+                    <form method="post"
+                          action="{{ request.url_for('delete_event_submit', event_id=ev.id) }}"
+                          style="display:inline;">
+                      <button class="button button--sm button--danger"
+                              type="submit"
+                              onclick="return confirm('Naozaj vymazať udalosť?');">
+                        Vymazať
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              {% endif %}
+            </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     {% endif %}
   </div>
 </div>

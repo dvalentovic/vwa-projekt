@@ -202,3 +202,129 @@ class AttendanceService:
         finally:
             if ctx is not None:
                 ctx.__exit__(None, None, None)
+
+    def get_players_training_summary(self):
+        conn, ctx = self._get_conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT
+                  u.id       AS user_id,
+                  u.username AS username,
+
+                  COUNT(e.id) AS trainings_total,
+
+                  SUM(CASE WHEN a.status = 'yes' THEN 1 ELSE 0 END) AS yes_count,
+                  SUM(CASE WHEN a.status = 'no' THEN 1 ELSE 0 END)  AS no_count,
+
+                  -- unknown berieme ako "nezadané" (alebo si môžeš spraviť vlastný stĺpec)
+                  SUM(CASE WHEN a.status = 'unknown' OR a.status IS NULL THEN 1 ELSE 0 END) AS missing_count
+
+                FROM users u
+                CROSS JOIN events e
+                LEFT JOIN attendance a
+                  ON a.user_id = u.id
+                 AND a.event_id = e.id
+
+                WHERE u.role = 'player'
+                  AND e.event_type = 'training'
+
+                GROUP BY u.id, u.username
+                ORDER BY u.username;
+                """
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            if ctx is not None:
+                ctx.__exit__(None, None, None)
+
+    def get_my_trainings_yes(self, user_id: int):
+        conn, ctx = self._get_conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT
+                  e.id,
+                  e.date,
+                  e.time_from,
+                  e.time_to,
+                  e.location,
+                  e.note,
+                  a.status
+                FROM events e
+                JOIN attendance a
+                  ON a.event_id = e.id
+                 AND a.user_id = ?
+                WHERE e.event_type = 'training'
+                  AND a.status = 'yes'
+                ORDER BY e.date DESC, e.time_from DESC;
+                """,
+                (user_id,),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            if ctx is not None:
+                ctx.__exit__(None, None, None)
+    def get_my_training_summary(self, user_id: int) -> Dict[str, Any]:
+        """
+        Štatistika pre jedného hráča len pre tréningy:
+        trainings_total, yes_count, no_count, missing_count
+        """
+        conn, ctx = self._get_conn()
+        try:
+            row = conn.execute(
+                """
+                SELECT
+                  COUNT(e.id) AS trainings_total,
+                  SUM(CASE WHEN a.status = 'yes' THEN 1 ELSE 0 END) AS yes_count,
+                  SUM(CASE WHEN a.status = 'no' THEN 1 ELSE 0 END)  AS no_count,
+                  SUM(CASE WHEN a.status = 'unknown' OR a.status IS NULL THEN 1 ELSE 0 END) AS missing_count
+                FROM events e
+                LEFT JOIN attendance a
+                  ON a.event_id = e.id
+                 AND a.user_id = ?
+                WHERE e.event_type = 'training'
+                """,
+                (user_id,),
+            ).fetchone()
+
+            # row môže byť sqlite.Row
+            return {
+                "trainings_total": int(row["trainings_total"] or 0),
+                "yes_count": int(row["yes_count"] or 0),
+                "no_count": int(row["no_count"] or 0),
+                "missing_count": int(row["missing_count"] or 0),
+            }
+        finally:
+            if ctx is not None:
+                ctx.__exit__(None, None, None)
+
+    def get_my_trainings(self, user_id: int):
+        """
+        Vráti všetky tréningy + môj status (yes/no/unknown).
+        """
+        conn, ctx = self._get_conn()
+        try:
+            rows = conn.execute(
+                """
+                SELECT
+                  e.id,
+                  e.date,
+                  e.time_from,
+                  e.time_to,
+                  e.location,
+                  e.note,
+                  COALESCE(a.status, 'unknown') AS status
+                FROM events e
+                LEFT JOIN attendance a
+                  ON a.event_id = e.id
+                 AND a.user_id = ?
+                WHERE e.event_type = 'training'
+                ORDER BY e.date DESC, e.time_from DESC;
+                """,
+                (user_id,),
+            ).fetchall()
+            return [dict(r) for r in rows]
+        finally:
+            if ctx is not None:
+                ctx.__exit__(None, None, None)

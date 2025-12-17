@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Moja dochádzka{% endblock %}
+
+{% block content %}
+{% set current_user = get_user(request) %}
+
+<div class="page">
+  <div class="page__header">
+    <div class="page__titles">
+      <span class="page__kicker">TeamHub</span>
+      <h2 class="page__title">Moja dochádzka</h2>
+      <p class="page__subtitle">Prehľad tvojich tréningov a účasti.</p>
+    </div>
+
+    <div class="page__actions">
+      <a class="button button--ghost" href="{{ url_for('events_ui') }}">Udalosti</a>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid grid--stats">
+    <div class="card card--stat">
+      <div class="stat">
+        <div class="stat__label">Tréningy spolu</div>
+        <div class="stat__value">{{ stats.trainings_total }}</div>
+      </div>
+    </div>
+
+    <div class="card card--stat">
+      <div class="stat">
+        <div class="stat__label">Idem</div>
+        <div class="stat__value stat__value--yes">{{ stats.yes_count }}</div>
+      </div>
+    </div>
+
+    <div class="card card--stat">
+      <div class="stat">
+        <div class="stat__label">Nejdem</div>
+        <div class="stat__value stat__value--no">{{ stats.no_count }}</div>
+      </div>
+    </div>
+
+    <div class="card card--stat">
+      <div class="stat">
+        <div class="stat__label">Nezadané</div>
+        <div class="stat__value stat__value--unk">{{ stats.missing_count }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIST -->
+  <div class="card" style="margin-top:14px;">
+    <div class="card__header">
+      <h3 class="card__title">Moje tréningy</h3>
+      <p class="card__hint">Status sa berie z dochádzky. Ak nič nie je vyplnené, je to „Nezadané“.</p>
+    </div>
+
+    {% if trainings|length == 0 %}
+      <p>Žiadne tréningy.</p>
+    {% else %}
+      <div class="table-wrap">
+        <table class="table table--zebra">
+          <thead>
+            <tr>
+              <th>Dátum</th>
+              <th>Čas</th>
+              <th>Miesto</th>
+              <th>Poznámka</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in trainings %}
+            <tr>
+              <td class="mono">{{ t.date }}</td>
+              <td class="mono">{{ t.time_from }} – {{ t.time_to }}</td>
+              <td>{{ t.location }}</td>
+              <td class="muted">{{ t.note or "" }}</td>
+              <td>
+                {% if t.status == "yes" %}
+                  <span class="badge badge--yes">Idem</span>
+                {% elif t.status == "no" %}
+                  <span class="badge badge--no">Nejdem</span>
+                {% else %}
+                  <span class="badge badge--unk">Nezadané</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -9,8 +9,9 @@ from pages.auth import router as auth_router
 from pages.events import router as events_router
 from pages.home import router as home_router
 from pages.admin_users import router as admin_users_router
-from pages.attendance import router as attendance_router
+from pages.me import router as me_router
 from pages.attendance_stats import router as attendance_stats_router
+from pages.players import router as players_router
 from dependencies import items_service, auth_service, get_current_user,events_service
 from services.items import ItemsService
 from services.auth import AuthService
@@ -26,7 +27,8 @@ def create_app() -> FastAPI:
     app.include_router(auth_router, prefix="", tags=["auth"])
     app.include_router(events_router, prefix="/events", tags=["events"])
     app.include_router(admin_users_router)
-    app.include_router(attendance_stats_router, prefix="/attendance/stats", tags=["attendance_stats"])
+    app.include_router(players_router, prefix="")
+    app.include_router(me_router)
     # DEBUG: vypiš zaregistrované cesty
     print("=== ROUTES ===")
     for r in app.routes:

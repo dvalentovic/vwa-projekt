@@ -21,10 +21,18 @@
 
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <a class="button button--primary" href="{{ request.url_for('events_ui') }}">Dochádzka / Udalosti</a>
-          <a class="button" href="{{ url_for('change_password_ui') }}">Zmeniť heslo</a>
+          <a class="button" href="{{ request.url_for('change_password_ui') }}">Zmeniť heslo</a>
 
           {% if user.role == "admin" %}
-            <a class="button" href="{{ request.url_for('admin_users_ui') }}">Používatelia</a>
+            <a class="button button--ghost" href="{{ request.url_for('admin_users_ui') }}">Používatelia</a>
+          {% endif %}
+
+          {% if user.role == "coach" %}
+            <a class="button button--ghost" href="{{ request.url_for('players_attendance_ui') }}">Hráči</a>
+          {% endif %}
+
+          {% if user.role == "player" %}
+            <a class="button button--ghost" href="{{ request.url_for('my_attendance_ui') }}">Moja dochádzka</a>
           {% endif %}
         </div>
 
@@ -50,9 +58,9 @@
       <div class="divider"></div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <span class="badge badge--good"><span class="badge__dot"></span> going</span>
-        <span class="badge badge--warn"><span class="badge__dot"></span> maybe</span>
-        <span class="badge badge--bad"><span class="badge__dot"></span> not going</span>
+        <span class="badge badge--good"><span class="badge__dot"></span>Idem</span>
+        <span class="badge badge--warn"><span class="badge__dot"></span>Nejdem</span>
+        <span class="badge badge--bad"><span class="badge__dot"></span>Neviems</span>
       </div>
     </div>
   </div>
